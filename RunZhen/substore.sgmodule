@@ -1,0 +1,1 @@
+﻿name: Sub-Storedescription: 高级订阅管理工具 @Peng-YMscriptings:- http_request:    name: Sub-Store    match: ^https?:\/\/sub\.store    script_url: https://raw.githubusercontent.com/Peng-YM/Sub-Store/master/backend/sub-store.min.js    timeout: 120    body_required: truemitm:  hostnames:    includes:    - sub.store
