@@ -1,0 +1,44 @@
+name: YouTube去广告
+description: 支持pip，后台播放
+author: Maasea
+homepage: https://whatshub.top
+icon: https://raw.githubusercontent.com/Koolson/Qure/master/IconSet/Color/YouTube.png
+url_rewrites:
+- match: (^https?:\/\/[\w-]+\.googlevideo\.com\/(?!dclk_video_ads).+?)&ctier=L(&.+?),ctier,(.+)
+  location: $1$2$3
+  status_code: 302
+- match: ^https?:\/\/[\w-]+\.googlevideo\.com\/(?!(dclk_video_ads|videoplayback\?)).+&oad
+  location: http://reject/
+  status_code: 307
+- match: ^https?:\/\/(www|s)\.youtube\.com\/api\/stats\/ads
+  location: http://reject/
+  status_code: 307
+- match: ^https?:\/\/(www|s)\.youtube\.com\/(pagead|ptracking)
+  location: http://reject/
+  status_code: 307
+- match: ^https?:\/\/s\.youtube\.com\/api\/stats\/qoe\?adcontext
+  location: http://reject/
+  status_code: 307
+scriptings:
+- http_request:
+    name: youtube.request
+    match: ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|reel\/reel_watch_sequence|get_watch)
+    script_url: https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.request.preview.js
+    body_required: true
+    binary_body: true
+- http_response:
+    name: youtube.response
+    match: ^https:\/\/youtubei\.googleapis\.com\/youtubei\/v1\/(browse|next|player|search|reel\/reel_watch_sequence|guide|account\/get_setting|get_watch)
+    script_url: https://raw.githubusercontent.com/Maasea/sgmodule/master/Script/Youtube/dist/youtube.response.preview.js
+    arguments:
+      _compat.$argument: '{"lyricLang":"{{{歌词翻译语言}}}","captionLang":"{{{字幕翻译语言}}}","blockUpload":{{{屏蔽上传按钮}}},"blockImmersive":{{{屏蔽选段按钮}}},"debug":{{{启用调试模式}}}}'
+    body_required: true
+    binary_body: true
+mitm:
+  hostnames:
+    includes:
+    - -redirector*.googlevideo.com
+    - '*.googlevideo.com'
+    - www.youtube.com
+    - s.youtube.com
+    - youtubei.googleapis.com
